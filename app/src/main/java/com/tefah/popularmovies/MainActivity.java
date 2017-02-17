@@ -3,46 +3,50 @@ package com.tefah.popularmovies;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.TextView;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getName();
+    RecyclerView recyclerView;
+    MovieAdapter movieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        movieAdapter = new MovieAdapter();
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(movieAdapter);
+        recyclerView.setHasFixedSize(true);
 
-        URL url = QueryUtils.creatUrl("popular");
-        MovieAsync movieAsync = new MovieAsync();
-        movieAsync.execute(url);
-
+        MovieAsync async = new MovieAsync();
+        async.execute("popular");
     }
-    public class MovieAsync extends AsyncTask<URL,Void,String>{
+    public class MovieAsync extends AsyncTask<String,Void,List<Movie>>{
 
         @Override
-        protected String doInBackground(URL... urls) {
-            String jsonResponse =null;
-            try {
-                jsonResponse = QueryUtils.makeHttpRequest(urls[0]);
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Problem making the HTTP request.", e);
-            }
-            return jsonResponse;
+        protected List<Movie> doInBackground(String... urls) {
+          List<Movie> movies;
+            movies = QueryUtils.fetchMoviesData(urls[0]);
+            return movies;
         }
 
         @Override
-        protected void onPostExecute(String response) {
-            super.onPostExecute(response);
-            TextView textView = (TextView) findViewById(R.id.response);
-            textView.setText(response);
+        protected void onPostExecute(List<Movie> movies) {
+            super.onPostExecute(movies);
+           movieAdapter.setMovies(movies);
         }
     }
 }

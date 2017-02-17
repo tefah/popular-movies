@@ -7,9 +7,17 @@ import java.io.Serializable;
  */
 
 public class Movie implements Serializable {
-    private String imageUrl, title, overview, releaseDate;
+    private String imagePath, title, overview, releaseDate;
     private int rate;
-    public String getImageUrl(){ return imageUrl;}
+
+    public Movie(String imagePath,String title, String overview, String releaseDate, int rate){
+        this.imagePath   = imagePath;
+        this.title       = title;
+        this.overview    = overview;
+        this.releaseDate = releaseDate;
+        this.rate        = rate;
+    }
+    public String getImageUrl(){ return imagePath;}
     public String getTitle(){ return title;}
     public String getOverview(){return overview;}
     public String getReleaseDate(){return releaseDate;}
