@@ -26,7 +26,7 @@ public final class QueryUtils {
 
     private static final String BASE_URL = "http://api.themoviedb.org/3/movie";
 
-    private static final String baseImagePath = "http://image.tmdb.org/t/p/w185/";
+    private static final String baseImagePath = "http://image.tmdb.org/t/p/w500/";
     //my TMDB api key
     private static final String API_KEY = "216c00407684e35f04d752a5c0a434e4";
     // default constructor
