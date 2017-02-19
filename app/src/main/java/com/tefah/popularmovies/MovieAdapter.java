@@ -21,10 +21,46 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     List<Movie> movies ;
     Context context;
 
+    /**
+     * An on-click handler that we've defined to make it easy for an Activity to interface with
+     * our recyclerView
+     */
+    private final MovieClickListener movieClickListener;
+
+    /**
+     * constructor to the MovieAdapter
+     * @param mClicklistener listener for the item click
+     */
+    public MovieAdapter(MovieClickListener mClicklistener) {
+        movieClickListener = mClicklistener;
+    }
+
+    /**
+     * interface to handle recycler view click
+     */
+    public interface MovieClickListener{
+        public void onMovieClick(Movie movie);
+    }
+
+    /**
+     * set the movies data of the MovieAdapter to the data we received
+     * @param movies the new data to display
+     */
     public void setMovies(List<Movie> movies){
         this.movies = movies;
         notifyDataSetChanged();
     }
+
+
+    /**
+     * This gets called when each new ViewHolder is created. This happens when the RecyclerView
+     * is laid out. Enough ViewHolders will be created to fill the screen and allow for scrolling.
+     *
+     * @param parent    The ViewGroup that these ViewHolders are contained within.
+     * @param viewType
+     *
+     * @return A new MovieViewHolder that holds the View for each list item
+     */
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
@@ -36,6 +72,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return new MovieViewHolder(view);
     }
 
+    /**
+     * this method called by the recycler view to update the view with data
+     * passing the view holder should be updated
+     *
+     * @param holder   The ViewHolder which should be updated to represent the
+     *                 contents of the item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
         Movie movie = movies.get(position);
@@ -51,16 +95,37 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder{
+    /**
+     * ViewHolder class to cache of the children views for an item.
+     */
+    public class MovieViewHolder extends RecyclerView.ViewHolder
+    implements View.OnClickListener{
         final ImageView poster;
 
+        /**
+         * constructor for the ViewHolder
+         * @param itemView
+         */
         public MovieViewHolder(View itemView) {
             super(itemView);
             poster = (ImageView) itemView.findViewById(R.id.poster_view);
+
+            itemView.setOnClickListener(this);
         }
+
+        /**
+         * bind the image view with data
+         * @param movie
+         */
         public void bind(Movie movie){
             String imageUrl = QueryUtils.creatImageUrl(movie.getImageUrl());
             Picasso.with(context).load(imageUrl).into(poster);
+        }
+
+        @Override
+        public void onClick(View view) {
+            Movie movie = movies.get(getAdapterPosition());
+            movieClickListener.onMovieClick(movie);
         }
     }
 }

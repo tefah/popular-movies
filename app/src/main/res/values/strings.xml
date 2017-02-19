@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Popular movies</string>
+    <!--string for popular menu item-->
+    <string name="popular">Popular</string>
+    <!--string for top rated menu item-->
+    <string name="top_rated">Top Rated</string>
+    <!--error message string-->
+    <string name="error_message">An error has occurred, Please try again</string>
 </resources>

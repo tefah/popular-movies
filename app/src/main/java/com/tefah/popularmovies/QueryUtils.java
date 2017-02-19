@@ -1,6 +1,7 @@
 package com.tefah.popularmovies;
 
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -35,12 +36,25 @@ public final class QueryUtils {
     /** Tag for the log messages */
     private static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
+    /**
+     * creat url that will be used by Picasso to download the image
+     *
+     * @param imagePath the unique image path
+     *
+     * @return String representing the url of the image
+     */
     public static final String creatImageUrl(String imagePath){
         return baseImagePath + imagePath;
     }
 
-    public static List<Movie> fetchMoviesData (String urlParam){
-         URL url = creatUrl(urlParam);
+    /**
+     * by using helper methods it take a String sort and do the networking work, parsing the data into list
+     * of movies and return this list
+     * @param sortOrder string used to build URL
+     * @return List of Movie object that contain the data received
+     */
+    public static List<Movie> fetchMoviesData (String sortOrder){
+         URL url = creatUrl(sortOrder);
 
         // Perform HTTP request to the URL and receive a JSON response back
         String jsonResponse = null;
@@ -55,8 +69,12 @@ public final class QueryUtils {
 
     /**
      * parse json response to list of Movie objects
+     * @param jsonResponse String have the JSON response from TMDB
      */
     private static List<Movie> parsingJsonData(String jsonResponse){
+        //in case there is no response return null
+        if (TextUtils.isEmpty(jsonResponse))
+            return null;
         List<Movie> movies = new ArrayList<>();
         try{
             // JSONObject of the whole response
@@ -92,13 +110,13 @@ public final class QueryUtils {
     /**
      * build a url to specific sort preference
      *
-     * @param param
+     * @param sortOrder
      * @return URL object
      */
-    private static URL creatUrl(String param){
+    private static URL creatUrl(String sortOrder){
         Uri baseUri = Uri.parse(BASE_URL);
         Uri.Builder uriBuilder = baseUri.buildUpon();
-        uriBuilder.appendPath(param);
+        uriBuilder.appendPath(sortOrder);
         uriBuilder.appendQueryParameter("api_key",API_KEY);
 
         URL url = null;
@@ -111,7 +129,10 @@ public final class QueryUtils {
     }
 
     /**
-     * Make an HTTP request to the given URL and return a String as the response.
+     * Make an HTTP request to the given URL
+     * @param url
+     * @return String response from TMDB
+     * @throws IOException
      */
     private static String makeHttpRequest(URL url) throws IOException {
         String jsonResponse = "";
