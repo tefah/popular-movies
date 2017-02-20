@@ -7,19 +7,21 @@ import java.io.Serializable;
  */
 
 public class Movie implements Serializable {
-    private String imagePath, title, overview, releaseDate;
-    private int rate;
+    private String posterPath, backdropPath, title, overview, releaseDate;
+    private double rate;
 
-    public Movie(String imagePath,String title, String overview, String releaseDate, int rate){
-        this.imagePath   = imagePath;
-        this.title       = title;
-        this.overview    = overview;
-        this.releaseDate = releaseDate;
-        this.rate        = rate;
+    public Movie(String posterPath, String backdropPath, String title, String overview, String releaseDate, double rate){
+        this.posterPath     = posterPath;
+        this.backdropPath   = backdropPath;
+        this.title          = title;
+        this.overview       = overview;
+        this.releaseDate    = releaseDate;
+        this.rate           = rate;
     }
-    public String getImageUrl(){ return imagePath;}
+    public String getPosterPath(){ return posterPath;}
+    public String getBackdropPath(){return backdropPath;};
     public String getTitle(){ return title;}
     public String getOverview(){return overview;}
     public String getReleaseDate(){return releaseDate;}
-    public int getRate(){return rate;}
+    public double getRate(){return rate;}
 }

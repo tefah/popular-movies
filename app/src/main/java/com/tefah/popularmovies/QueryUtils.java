@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,9 @@ public final class QueryUtils {
 
     private static final String BASE_URL = "http://api.themoviedb.org/3/movie";
 
-    private static final String baseImagePath = "http://image.tmdb.org/t/p/w500/";
+    private static final String BASE_IMAGE_PATH = "http://image.tmdb.org/t/p/w500/";
+    private static final String BASE_IMAGE_PATH_THUMBNAIL = "http://image.tmdb.org/t/p/w185/";
+
     //my TMDB api key
     private static final String API_KEY = "216c00407684e35f04d752a5c0a434e4";
     // default constructor
@@ -44,7 +47,16 @@ public final class QueryUtils {
      * @return String representing the url of the image
      */
     public static final String creatImageUrl(String imagePath){
-        return baseImagePath + imagePath;
+        return BASE_IMAGE_PATH + imagePath;
+    }
+
+    /**
+     * for thumbnail poster
+     * @param imagePath
+     * @return string representing the url of the thumbnail image
+     */
+    public static final String creatImageUrlSmall(String imagePath){
+        return BASE_IMAGE_PATH_THUMBNAIL + imagePath;
     }
 
     /**
@@ -60,7 +72,9 @@ public final class QueryUtils {
         String jsonResponse = null;
         try {
             jsonResponse = makeHttpRequest(url);
-        } catch (IOException e) {
+        }catch (UnknownHostException e) {
+            e.printStackTrace();
+        }catch (IOException e) {
             Log.e(LOG_TAG, "Problem making the HTTP request.", e);
         }
         List<Movie> movies = parsingJsonData(jsonResponse);
@@ -84,18 +98,19 @@ public final class QueryUtils {
 
             //extracting data for each movie in the result array
             for (int i = 0; i<result.length(); i++){
-                String imagePath, title, overview, releaseDate;
-                int rate;
+                String posterPath,backdropPath, title, overview, releaseDate;
+                double rate;
                 JSONObject currentMovie = result.getJSONObject(i);
 
                 // extract the needed data from the object
-                imagePath   = currentMovie.getString("poster_path");
-                title       = currentMovie.getString("original_title");
-                overview    = currentMovie.getString("overview");
-                releaseDate = currentMovie.getString("release_date");
-                rate        = currentMovie.getInt("vote_average");
+                posterPath      = currentMovie.getString("poster_path");
+                backdropPath    = currentMovie.getString("backdrop_path");
+                title           = currentMovie.getString("original_title");
+                overview        = currentMovie.getString("overview");
+                releaseDate     = currentMovie.getString("release_date");
+                rate            = currentMovie.getDouble("vote_average");
 
-                movies.add(new Movie(imagePath,title,overview,releaseDate,rate));
+                movies.add(new Movie(posterPath,backdropPath,title,overview,releaseDate,rate));
             }
 
         }catch (JSONException e) {
@@ -128,6 +143,9 @@ public final class QueryUtils {
         return url;
     }
 
+    /**
+     * Make an HTTP request to the given URL and return a String as the response.
+     */
     /**
      * Make an HTTP request to the given URL
      * @param url

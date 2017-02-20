@@ -6,4 +6,11 @@
     <string name="top_rated">Top Rated</string>
     <!--error message string-->
     <string name="error_message">An error has occurred, Please try again</string>
+    <!--string name to show in the UI-->
+    <string name="original_name">Movie Title</string>
+    <!--string release date to show in the UI-->
+    <string name="release_date">Released on</string>
+    <!--string overview to show in UI-->
+    <string name="overview">Overview</string>
+
 </resources>

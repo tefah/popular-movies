@@ -118,7 +118,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
          * @param movie
          */
         public void bind(Movie movie){
-            String imageUrl = QueryUtils.creatImageUrl(movie.getImageUrl());
+            String imageUrl = QueryUtils.creatImageUrl(movie.getPosterPath());
             Picasso.with(context).load(imageUrl).into(poster);
         }
 

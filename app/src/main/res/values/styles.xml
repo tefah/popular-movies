@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -6,6 +6,12 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="text_details">
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">arial</item>
+        <item name="android:layout_marginRight">8dp</item>
     </style>
 
 </resources>
