@@ -26,7 +26,7 @@ public class Movie implements Parcelable {
         this.title          = parcel.readString();
         this.overview       = parcel.readString();
         this.releaseDate    = parcel.readString();
-        this.rate           = parcel.readInt();
+        this.rate           = parcel.readDouble();
     }
 
     @Override

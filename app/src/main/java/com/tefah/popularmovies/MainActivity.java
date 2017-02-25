@@ -1,7 +1,12 @@
 package com.tefah.popularmovies;
 
+import android.content.AsyncTaskLoader;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,22 +20,23 @@ import android.widget.TextView;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-implements MovieAdapter.MovieClickListener{
-
-
-
-
+implements MovieAdapter.MovieClickListener,
+        LoaderCallbacks<List<Movie>>{
 
     private static final String LOG_TAG     = MainActivity.class.getName();
     //strings for sorting order
     private static final String POPULAR     = "popular";
     private static final String TOP_RATED   = "top_rated";
+    //constants for loader id and the key of sort order
+    private static final int    LOADER_ID   = 22;
+    public static final String  SORT_KEY    = "sort key";
 
     RecyclerView recyclerView;
     MovieAdapter movieAdapter;
     MovieAsync async;
     TextView errorMessage;
     ProgressBar loadingIndicator;
+    Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +50,10 @@ implements MovieAdapter.MovieClickListener{
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(movieAdapter);
         recyclerView.setHasFixedSize(true);
+        bundle  = new Bundle();
 
-        MovieAsync async = new MovieAsync();
-        async.execute(POPULAR);
+        bundle.putString(SORT_KEY,POPULAR);
+        getLoaderManager().initLoader(LOADER_ID,bundle,this);
     }
     public void showDataOnScreen(){
         recyclerView.setVisibility(View.VISIBLE);
@@ -65,6 +72,8 @@ implements MovieAdapter.MovieClickListener{
         intent.putExtra("movie",movie);
         startActivity(intent);
     }
+
+
 
     public class MovieAsync extends AsyncTask<String,Void,List<Movie>>{
 
@@ -99,6 +108,36 @@ implements MovieAdapter.MovieClickListener{
         }
     }
 
+
+
+    @Override
+    public android.content.Loader<List<Movie>> onCreateLoader(int i, Bundle args) {
+        if (args.isEmpty())
+          return null;
+        String sortOrder = args.getString(SORT_KEY);
+        loadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
+        return new MovieLoader(this, sortOrder, loadingIndicator);
+    }
+
+    @Override
+    public void onLoadFinished(android.content.Loader<List<Movie>> loader, List<Movie> movies) {
+        loadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
+        loadingIndicator.setVisibility(View.GONE);
+        if (movies!=null) {
+            showDataOnScreen();
+            movieAdapter.setMovies(movies);
+        }else
+            showErrorMessage();
+    }
+
+    @Override
+    public void onLoaderReset(android.content.Loader<List<Movie>> loader) {
+
+    }
+
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.sort_menu,menu);
@@ -110,13 +149,13 @@ implements MovieAdapter.MovieClickListener{
         int id = item.getItemId();
         switch (id) {
             case R.id.popular:
-                async = new MovieAsync();
-                async.execute(POPULAR);
+                bundle.putString(SORT_KEY,POPULAR);
+                getLoaderManager().initLoader(LOADER_ID,bundle,this);
                 setTitle(R.string.app_name);
                 break;
             case R.id.top_rated:
-                async = new MovieAsync();
-                async.execute(TOP_RATED);
+                bundle.putString(SORT_KEY,TOP_RATED);
+                getLoaderManager().initLoader(LOADER_ID + 1, bundle,this);
                 setTitle(R.string.top_rated);
                 break;
             default:
@@ -125,3 +164,4 @@ implements MovieAdapter.MovieClickListener{
         return true;
     }
 }
+
