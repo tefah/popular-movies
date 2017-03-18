@@ -1,16 +1,24 @@
 <resources>
     <string name="app_name">Popular movies</string>
+
+    <!--Strings for the menu titles-->
     <!--string for popular menu item-->
     <string name="popular">Popular</string>
     <!--string for top rated menu item-->
     <string name="top_rated">Top Rated</string>
+    <string name="favorites">Favorites</string>
+
+    <!--strings to be shown in the MainActivity UI-->
     <!--error message string-->
     <string name="error_message">An error has occurred, Please try again</string>
+
+    <!--strings to be shown in the DetailsActivity UI-->
     <!--string name to show in the UI-->
     <string name="original_name">Movie Title</string>
     <!--string release date to show in the UI-->
     <string name="release_date">Released on</string>
     <!--string overview to show in UI-->
     <string name="overview">Overview</string>
+
 
 </resources>

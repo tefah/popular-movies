@@ -26,10 +26,14 @@ import java.util.List;
 
 public final class QueryUtils {
 
-    private static final String BASE_URL = "http://api.themoviedb.org/3/movie";
+    //strings to  different end points
+    public static final String VIDEOS_END_POINT = "videos";
+    public static final String REVIEWS_END_POINT = "reviews";
 
+    private static final String BASE_URL = "http://api.themoviedb.org/3/movie";
     private static final String BASE_IMAGE_PATH = "http://image.tmdb.org/t/p/w500/";
     private static final String BASE_IMAGE_PATH_THUMBNAIL = "http://image.tmdb.org/t/p/w185/";
+
 
     //my TMDB api key
     private static final String API_KEY = "216c00407684e35f04d752a5c0a434e4";
@@ -38,6 +42,22 @@ public final class QueryUtils {
 
     /** Tag for the log messages */
     private static final String LOG_TAG = QueryUtils.class.getSimpleName();
+
+    public static URL createDetailsUrl (int id, String endPoint){
+        Uri baseUri = Uri.parse(BASE_URL);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+        uriBuilder.appendPath(String.valueOf(id));
+        uriBuilder.appendPath(endPoint);
+        uriBuilder.appendQueryParameter("api_key",API_KEY);
+
+        URL url = null;
+        try {
+            url = new URL(uriBuilder.toString());
+        } catch (MalformedURLException e) {
+            Log.e(LOG_TAG, "Problem building the URL ", e);
+        }
+        return url;
+    }
 
     /**
      * creat url that will be used by Picasso to download the image
@@ -100,6 +120,7 @@ public final class QueryUtils {
             for (int i = 0; i<result.length(); i++){
                 String posterPath,backdropPath, title, overview, releaseDate;
                 double rate;
+                int    id;
                 JSONObject currentMovie = result.getJSONObject(i);
 
                 // extract the needed data from the object
@@ -109,8 +130,9 @@ public final class QueryUtils {
                 overview        = currentMovie.getString("overview");
                 releaseDate     = currentMovie.getString("release_date");
                 rate            = currentMovie.getDouble("vote_average");
+                id              = currentMovie.getInt("id");
 
-                movies.add(new Movie(posterPath,backdropPath,title,overview,releaseDate,rate));
+                movies.add(new Movie(posterPath,backdropPath,title,overview,releaseDate,rate,id));
             }
 
         }catch (JSONException e) {
@@ -144,15 +166,12 @@ public final class QueryUtils {
     }
 
     /**
-     * Make an HTTP request to the given URL and return a String as the response.
-     */
-    /**
      * Make an HTTP request to the given URL
      * @param url
      * @return String response from TMDB
      * @throws IOException
      */
-    private static String makeHttpRequest(URL url) throws IOException {
+    public static String makeHttpRequest(URL url) throws IOException {
         String jsonResponse = "";
 
         // If the URL is null, then return early.

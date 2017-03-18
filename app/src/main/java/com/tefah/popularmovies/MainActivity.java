@@ -3,6 +3,7 @@ package com.tefah.popularmovies;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.app.LoaderManager;
@@ -17,6 +18,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tefah.popularmovies.data.MovieContract;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -28,12 +32,19 @@ implements MovieAdapter.MovieClickListener,
     private static final String POPULAR     = "popular";
     private static final String TOP_RATED   = "top_rated";
     //constants for loader id and the key of sort order
-    private static final int    LOADER_ID   = 22;
-    public static final String  SORT_KEY    = "sort key";
+    private static final int    LOADER_ID       = 22;
+    public static final String  SORT_KEY        = "sort key";
+    //column indices in db
+    public static final int     POSTER_IND      = 0;
+    public static final int     BACKDROP_IND    = POSTER_IND + 1;
+    public static final int     TITLE_IND       = BACKDROP_IND + 1;
+    public static final int     OVERVIEW_IND    = TITLE_IND + 1;
+    public static final int     RATE_IND        = OVERVIEW_IND + 1;
+    public static final int     RELEASE_IND     = RATE_IND + 1;
+    public static final int     ID_IND          = RELEASE_IND + 1;
 
     RecyclerView recyclerView;
     MovieAdapter movieAdapter;
-    MovieAsync async;
     TextView errorMessage;
     ProgressBar loadingIndicator;
     Bundle bundle;
@@ -75,7 +86,7 @@ implements MovieAdapter.MovieClickListener,
 
 
 
-    public class MovieAsync extends AsyncTask<String,Void,List<Movie>>{
+    public class MovieAsync extends AsyncTask<Void,Void,List<Movie>>{
 
         @Override
         protected void onPreExecute() {
@@ -85,13 +96,8 @@ implements MovieAdapter.MovieClickListener,
         }
 
         @Override
-        protected List<Movie> doInBackground(String... sort) {
-            if (sort.length == 0) {
-                return null;
-            }
-
-          List<Movie> movies;
-            movies = QueryUtils.fetchMoviesData(sort[0]);
+        protected List<Movie> doInBackground(Void... sort) {
+            List<Movie> movies = getDataFromDB();
             return movies;
         }
 
@@ -109,7 +115,12 @@ implements MovieAdapter.MovieClickListener,
     }
 
 
-
+    /**
+     * loader callback function to create new loader to handle task in the background
+     * @param i
+     * @param args bundle that holds params that would be needed in the background task
+     * @return loader object
+     */
     @Override
     public android.content.Loader<List<Movie>> onCreateLoader(int i, Bundle args) {
         if (args.isEmpty())
@@ -119,6 +130,11 @@ implements MovieAdapter.MovieClickListener,
         return new MovieLoader(this, sortOrder, loadingIndicator);
     }
 
+    /**
+     * a callback function that is called after the loader finish his background task
+     * @param loader that handeled the background task
+     * @param movies list of movies
+     */
     @Override
     public void onLoadFinished(android.content.Loader<List<Movie>> loader, List<Movie> movies) {
         loadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
@@ -158,10 +174,44 @@ implements MovieAdapter.MovieClickListener,
                 getLoaderManager().initLoader(LOADER_ID + 1, bundle,this);
                 setTitle(R.string.top_rated);
                 break;
+            case R.id.favorites_menu:
+                setTitle(R.string.favorites);
+                new MovieAsync().execute();
+                break;
             default:
                 break;
         }
         return true;
+    }
+
+
+    //todo These functions should be moved to utility class
+    public  List<Movie> getDataFromDB(){
+        Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                null, null, null, null);
+        List<Movie> movies = fetchDataFromCursor(cursor);
+        return  movies;
+    }
+    public List<Movie> fetchDataFromCursor(Cursor cursor){
+        List<Movie> movies = new ArrayList<Movie>();
+        while (cursor.moveToNext()){
+            Movie movie;
+            String posterPath, backdropPath, title, overview, releaseDate;
+            double rate;
+            int id;
+
+            posterPath      = cursor.getString(POSTER_IND);
+            backdropPath    = cursor.getString(BACKDROP_IND);
+            title           = cursor.getString(TITLE_IND);
+            overview        = cursor.getString(OVERVIEW_IND);
+            releaseDate     = cursor.getString(RELEASE_IND);
+            rate            = cursor.getDouble(RATE_IND);
+            id              = cursor.getInt(ID_IND);
+
+            movie = new Movie(posterPath, backdropPath, title, overview, releaseDate, rate, id);
+            movies.add(movie);
+        }
+        return movies;
     }
 }
 

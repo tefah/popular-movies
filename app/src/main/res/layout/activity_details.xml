@@ -103,6 +103,13 @@
                 android:fitsSystemWindows="true"
                 app:layout_collapseMode="parallax"
                 />
+            <Button
+                android:id="@+id/favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_anchor="@id/backdrop"
+                app:layout_anchorGravity="bottom|right|end"
+                android:text="cache"/>
 
 
             <ImageView

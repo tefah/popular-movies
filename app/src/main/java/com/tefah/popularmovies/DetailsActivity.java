@@ -1,14 +1,24 @@
 package com.tefah.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.tefah.popularmovies.data.MovieContract.MovieEntry;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -40,12 +50,31 @@ public class DetailsActivity extends AppCompatActivity {
         title       = (TextView)  findViewById(R.id.title);
         ratingBar   = (RatingBar) findViewById(R.id.rate);
 
+        Button favorite = (Button) findViewById(R.id.favorite);
+        favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ContentValues values = new ContentValues();
+
+                values.put(MovieEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
+                values.put(MovieEntry.COLUMN_BACKDROP_PATH, movie.getBackdropPath());
+                values.put(MovieEntry.COLUMN_TITLE, movie.getTitle());
+                values.put(MovieEntry.COLUMN_OVERVIEW, movie.getOverview());
+                values.put(MovieEntry.COLUMN_RATE, movie.getRate());
+                values.put(MovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
+
+                getContentResolver().insert(MovieEntry.CONTENT_URI, values);
+            }
+        });
 
 
         bind();
 
 
+
     }
+
+
     public void bind(){
         Picasso.with(this).load(QueryUtils.creatImageUrlSmall(movie.getPosterPath())).into(poster);
         Picasso.with(this).load(QueryUtils.creatImageUrl(movie.getBackdropPath())).into(backdrop);
@@ -57,6 +86,7 @@ public class DetailsActivity extends AppCompatActivity {
         rate.setText( String.valueOf(movie.getRate()));
 
     }
+
 
 
 }
