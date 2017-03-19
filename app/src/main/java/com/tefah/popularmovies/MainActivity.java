@@ -3,6 +3,8 @@ package com.tefah.popularmovies;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -32,16 +34,10 @@ implements MovieAdapter.MovieClickListener,
     private static final String POPULAR     = "popular";
     private static final String TOP_RATED   = "top_rated";
     //constants for loader id and the key of sort order
-    private static final int    LOADER_ID       = 22;
-    public static final String  SORT_KEY        = "sort key";
-    //column indices in db
-    public static final int     POSTER_IND      = 0;
-    public static final int     BACKDROP_IND    = POSTER_IND + 1;
-    public static final int     TITLE_IND       = BACKDROP_IND + 1;
-    public static final int     OVERVIEW_IND    = TITLE_IND + 1;
-    public static final int     RATE_IND        = OVERVIEW_IND + 1;
-    public static final int     RELEASE_IND     = RATE_IND + 1;
-    public static final int     ID_IND          = RELEASE_IND + 1;
+    private static final int    LOADER_ID           = 1;
+    public static final int     FAVORITES_LOADER_ID = 22;
+    public static final String  SORT_KEY            = "sort key";
+
 
     RecyclerView recyclerView;
     MovieAdapter movieAdapter;
@@ -54,9 +50,12 @@ implements MovieAdapter.MovieClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        GridLayoutManager layoutManager;
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+             layoutManager = new GridLayoutManager(this,3);
+        } else
+            layoutManager = new GridLayoutManager(this, 2);
         movieAdapter = new MovieAdapter(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(movieAdapter);
@@ -83,37 +82,6 @@ implements MovieAdapter.MovieClickListener,
         intent.putExtra("movie",movie);
         startActivity(intent);
     }
-
-
-
-    public class MovieAsync extends AsyncTask<Void,Void,List<Movie>>{
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            loadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
-            loadingIndicator.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected List<Movie> doInBackground(Void... sort) {
-            List<Movie> movies = getDataFromDB();
-            return movies;
-        }
-
-        @Override
-        protected void onPostExecute(List<Movie> movies) {
-            super.onPostExecute(movies);
-            loadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
-            loadingIndicator.setVisibility(View.GONE);
-            if (movies!=null) {
-                showDataOnScreen();
-                movieAdapter.setMovies(movies);
-            }else
-                showErrorMessage();
-        }
-    }
-
 
     /**
      * loader callback function to create new loader to handle task in the background
@@ -175,8 +143,8 @@ implements MovieAdapter.MovieClickListener,
                 setTitle(R.string.top_rated);
                 break;
             case R.id.favorites_menu:
-                setTitle(R.string.favorites);
-                new MovieAsync().execute();
+               setTitle(getString(R.string.favorites));
+                getLoaderManager().initLoader(FAVORITES_LOADER_ID + 1, bundle,this);
                 break;
             default:
                 break;
@@ -184,34 +152,5 @@ implements MovieAdapter.MovieClickListener,
         return true;
     }
 
-
-    //todo These functions should be moved to utility class
-    public  List<Movie> getDataFromDB(){
-        Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
-                null, null, null, null);
-        List<Movie> movies = fetchDataFromCursor(cursor);
-        return  movies;
-    }
-    public List<Movie> fetchDataFromCursor(Cursor cursor){
-        List<Movie> movies = new ArrayList<Movie>();
-        while (cursor.moveToNext()){
-            Movie movie;
-            String posterPath, backdropPath, title, overview, releaseDate;
-            double rate;
-            int id;
-
-            posterPath      = cursor.getString(POSTER_IND);
-            backdropPath    = cursor.getString(BACKDROP_IND);
-            title           = cursor.getString(TITLE_IND);
-            overview        = cursor.getString(OVERVIEW_IND);
-            releaseDate     = cursor.getString(RELEASE_IND);
-            rate            = cursor.getDouble(RATE_IND);
-            id              = cursor.getInt(ID_IND);
-
-            movie = new Movie(posterPath, backdropPath, title, overview, releaseDate, rate, id);
-            movies.add(movie);
-        }
-        return movies;
-    }
 }
 

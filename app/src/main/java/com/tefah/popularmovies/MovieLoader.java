@@ -3,6 +3,9 @@ package com.tefah.popularmovies;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.view.View;
+
+import com.tefah.popularmovies.data.DataUtils;
+
 import java.util.List;
 
 /**
@@ -33,7 +36,11 @@ class MovieLoader extends AsyncTaskLoader<List<Movie>> {
     @Override
     public List<Movie> loadInBackground() {
         List<Movie> movies;
-        movies = QueryUtils.fetchMoviesData(sortOrder);
+        if (getId() >= MainActivity.FAVORITES_LOADER_ID){
+            movies = DataUtils.getDataFromDB(getContext());
+        }else {
+            movies = QueryUtils.fetchMoviesData(sortOrder);
+        }
         return movies;
     }
 

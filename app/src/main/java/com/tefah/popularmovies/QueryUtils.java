@@ -171,7 +171,7 @@ public final class QueryUtils {
      * @return String response from TMDB
      * @throws IOException
      */
-    public static String makeHttpRequest(URL url) throws IOException {
+    private static String makeHttpRequest(URL url) throws IOException {
         String jsonResponse = "";
 
         // If the URL is null, then return early.

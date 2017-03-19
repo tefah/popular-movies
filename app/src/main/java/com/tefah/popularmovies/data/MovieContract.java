@@ -25,6 +25,7 @@ public class MovieContract {
         public static final String COLUMN_OVERVIEW      = "overview";
         public static final String COLUMN_RELEASE_DATE  = "release";
         public static final String COLUMN_RATE          = "rate";
+        public static final String COLUMN_ID            = "id";
 
 
     }

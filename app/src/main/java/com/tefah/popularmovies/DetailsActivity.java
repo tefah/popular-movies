@@ -62,6 +62,7 @@ public class DetailsActivity extends AppCompatActivity {
                 values.put(MovieEntry.COLUMN_OVERVIEW, movie.getOverview());
                 values.put(MovieEntry.COLUMN_RATE, movie.getRate());
                 values.put(MovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
+                values.put(MovieEntry.COLUMN_ID, movie.getId());
 
                 getContentResolver().insert(MovieEntry.CONTENT_URI, values);
             }

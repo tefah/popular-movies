@@ -8,10 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
     <style name="text_details">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">8dp</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:fontFamily" tools:targetApi="jelly_bean">arial</item>
         <item name="android:layout_marginRight">8dp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:textSize">24dp</item>
     </style>
 
 </resources>
