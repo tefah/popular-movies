@@ -33,7 +33,7 @@ public final class QueryUtils {
     private static final String BASE_URL = "http://api.themoviedb.org/3/movie";
     private static final String BASE_IMAGE_PATH = "http://image.tmdb.org/t/p/w500/";
     private static final String BASE_IMAGE_PATH_THUMBNAIL = "http://image.tmdb.org/t/p/w185/";
-
+    private static final String BASE_YOUTUBE_URL = "https://www.youtube.com/watch";
 
     //my TMDB api key
     private static final String API_KEY = "216c00407684e35f04d752a5c0a434e4";
@@ -42,6 +42,19 @@ public final class QueryUtils {
 
     /** Tag for the log messages */
     private static final String LOG_TAG = QueryUtils.class.getSimpleName();
+    public static URL createTrailerUrl(String key){
+        Uri baseUri = Uri.parse(BASE_YOUTUBE_URL);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+        uriBuilder.appendQueryParameter("v", key);
+
+        URL url = null;
+        try {
+            url = new URL(uriBuilder.toString());
+        } catch (MalformedURLException e) {
+            Log.e(LOG_TAG, "Problem building the URL ", e);
+        }
+        return url;
+    }
 
     public static URL createDetailsUrl (int id, String endPoint){
         Uri baseUri = Uri.parse(BASE_URL);
@@ -57,6 +70,28 @@ public final class QueryUtils {
             Log.e(LOG_TAG, "Problem building the URL ", e);
         }
         return url;
+    }
+
+    private static List<String> parseTrailers(String  jsonResponse) throws JSONException{
+        JSONObject root = new JSONObject(jsonResponse);
+        JSONArray results = root.getJSONArray("results");
+        if (results.length() == 0) return null;
+        List<String> tralerKeys  = new ArrayList<>(results.length());
+        for (int i=0; i<results.length(); i++){
+            tralerKeys.add(i, results.getJSONObject(i).getString("key"));
+        }
+        return tralerKeys;
+    }
+    public static List<String> getTrailers(int id){
+        List<String> keys = null;
+        URL url = createDetailsUrl(id, VIDEOS_END_POINT);
+        try {
+            String response = makeHttpRequest(url);
+            keys = parseTrailers(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return keys;
     }
 
     /**

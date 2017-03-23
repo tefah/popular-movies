@@ -20,5 +20,5 @@
     <!--string overview to show in UI-->
     <string name="overview">Overview</string>
 
-
+<string name="trailer">Trailer</string>
 </resources>

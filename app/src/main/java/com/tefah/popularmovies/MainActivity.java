@@ -35,7 +35,7 @@ implements MovieAdapter.MovieClickListener,
     private static final String TOP_RATED   = "top_rated";
     //constants for loader id and the key of sort order
     private static final int    LOADER_ID           = 1;
-    public static final int     FAVORITES_LOADER_ID = 22;
+    public static final int     FAVORITES_LOADER_ID = 100;
     public static final String  SORT_KEY            = "sort key";
 
 
