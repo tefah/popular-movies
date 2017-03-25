@@ -20,6 +20,7 @@ public class DataUtils {
     public static final int     RATE_IND        = OVERVIEW_IND + 1;
     public static final int     RELEASE_IND     = RATE_IND + 1;
     public static final int     ID_IND          = RELEASE_IND + 1;
+    public static final int     IS_FAVORITE_IND = ID_IND +1;
 
     public static List<Movie> getDataFromDB(Context context){
         Cursor cursor = context.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
@@ -27,13 +28,13 @@ public class DataUtils {
         List<Movie> movies = fetchDataFromCursor(cursor);
         return  movies;
     }
-    public static List<Movie> fetchDataFromCursor(Cursor cursor){
-        List<Movie> movies = new ArrayList<Movie>();
+    private static List<Movie> fetchDataFromCursor(Cursor cursor){
+        List<Movie> movies = new ArrayList<>();
         while (cursor.moveToNext()){
             Movie movie;
             String posterPath, backdropPath, title, overview, releaseDate;
             double rate;
-            int id;
+            int id, isFavorite;
 
             posterPath      = cursor.getString(POSTER_IND);
             backdropPath    = cursor.getString(BACKDROP_IND);
@@ -42,8 +43,11 @@ public class DataUtils {
             releaseDate     = cursor.getString(RELEASE_IND);
             rate            = cursor.getDouble(RATE_IND);
             id              = cursor.getInt(ID_IND);
+            isFavorite      = cursor.getInt(IS_FAVORITE_IND);
 
             movie = new Movie(posterPath, backdropPath, title, overview, releaseDate, rate, id);
+            if (isFavorite > 0)
+                movie.setFavorite(true);
             movies.add(movie);
         }
         return movies;

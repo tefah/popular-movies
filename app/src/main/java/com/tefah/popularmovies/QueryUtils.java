@@ -42,6 +42,12 @@ public final class QueryUtils {
 
     /** Tag for the log messages */
     private static final String LOG_TAG = QueryUtils.class.getSimpleName();
+
+    /**
+     * create the trailer url that will be used in an implicit intent
+     * @param key query parameter that every url to video on youtube has one
+     * @return url of the trailer
+     */
     public static URL createTrailerUrl(String key){
         Uri baseUri = Uri.parse(BASE_YOUTUBE_URL);
         Uri.Builder uriBuilder = baseUri.buildUpon();
@@ -56,7 +62,13 @@ public final class QueryUtils {
         return url;
     }
 
-    public static URL createDetailsUrl (int id, String endPoint){
+    /**
+     * create url to TMDB to search with specific movie id to two different end point
+     * @param id the movie id we want search
+     * @param endPoint the data to be got, there is only two here videos and reviews
+     * @return url to TMDB
+     */
+    private static URL createDetailsUrl (int id, String endPoint){
         Uri baseUri = Uri.parse(BASE_URL);
         Uri.Builder uriBuilder = baseUri.buildUpon();
         uriBuilder.appendPath(String.valueOf(id));
@@ -72,6 +84,12 @@ public final class QueryUtils {
         return url;
     }
 
+    /**
+     * parse the json response by extracting the keys of the trailers to  list of keys
+     * @param jsonResponse
+     * @return List of strings each one represents a trailer key
+     * @throws JSONException
+     */
     private static List<String> parseTrailers(String  jsonResponse) throws JSONException{
         JSONObject root = new JSONObject(jsonResponse);
         JSONArray results = root.getJSONArray("results");
@@ -82,6 +100,14 @@ public final class QueryUtils {
         }
         return tralerKeys;
     }
+
+    /**
+     * using helper methods it take the movie id and create url to videos end point
+     * and get a json response from TMDB then parsing it to list of keys to finally
+     * return it
+     * @param id id of the movie
+     * @return list of keys of videos
+     */
     public static List<String> getTrailers(int id){
         List<String> keys = null;
         URL url = createDetailsUrl(id, VIDEOS_END_POINT);
@@ -92,6 +118,41 @@ public final class QueryUtils {
             e.printStackTrace();
         }
         return keys;
+    }
+
+    /**
+     * parse the json response of reviews end point into list of strings each one represent review
+     * @param response json response from TMDB
+     * @return list of reviews
+     * @throws JSONException
+     */
+    private static List<String> parseReviews(String response) throws JSONException{
+        JSONObject root = new JSONObject(response);
+        JSONArray results = root.getJSONArray("results");
+        List<String> reviews = null;
+        if (results.length() > 0){
+           reviews = new ArrayList<>();
+            for (int i =0; i< results.length(); i++)
+                reviews.add(i, results.getJSONObject(i).getString("content"));
+        }
+        return reviews;
+    }
+
+    /**
+     * it do the same as getTrailers but for reviews end point
+     * @param id of the movie
+     * @return list of reviews
+     */
+    public static List<String> getReviews(int id){
+        List<String> reviews = null;
+        URL url = createDetailsUrl(id, REVIEWS_END_POINT);
+        try {
+            String response = makeHttpRequest(url);
+            reviews = parseReviews(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return reviews;
     }
 
     /**

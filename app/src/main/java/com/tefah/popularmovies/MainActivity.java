@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tefah.popularmovies.data.MovieContract;
 
@@ -37,6 +38,7 @@ implements MovieAdapter.MovieClickListener,
     private static final int    LOADER_ID           = 1;
     public static final int     FAVORITES_LOADER_ID = 100;
     public static final String  SORT_KEY            = "sort key";
+    private  int newId = 0;
 
 
     RecyclerView recyclerView;
@@ -116,7 +118,7 @@ implements MovieAdapter.MovieClickListener,
 
     @Override
     public void onLoaderReset(android.content.Loader<List<Movie>> loader) {
-
+        loader.forceLoad();
     }
 
 
@@ -144,7 +146,8 @@ implements MovieAdapter.MovieClickListener,
                 break;
             case R.id.favorites_menu:
                setTitle(getString(R.string.favorites));
-                getLoaderManager().initLoader(FAVORITES_LOADER_ID + 1, bundle,this);
+                getLoaderManager().initLoader(FAVORITES_LOADER_ID + newId, bundle,this);
+                newId = newId+1;
                 break;
             default:
                 break;
@@ -152,5 +155,14 @@ implements MovieAdapter.MovieClickListener,
         return true;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (getTitle() == getString(R.string.favorites)) {
+            movieAdapter.setMovies(null);
+            getLoaderManager().initLoader(FAVORITES_LOADER_ID + newId, bundle, this);
+            newId = newId + 1;
+        }
+    }
 }
 

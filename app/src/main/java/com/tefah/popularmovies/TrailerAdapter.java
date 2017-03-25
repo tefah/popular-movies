@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import java.util.List;
 
+/**
+ * Adapter for Trailers recycler view
+ */
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder>{
     List<String> keys = null;
     Context context;
@@ -62,7 +64,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
             index = (TextView) itemView.findViewById(R.id.trailer_num);
         }
         public void bind(int position){
-            index.setText(context.getResources().getString(R.string.trailer) + " " + position);
+            index.setText(context.getResources().getString(R.string.trailer) + " " + (position + 1));
         }
 
         @Override

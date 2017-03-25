@@ -12,6 +12,7 @@ public class Movie implements Parcelable {
     private String posterPath, backdropPath, title, overview, releaseDate;
     private double rate;
     private int    id;
+    private boolean isFavorite;
 
     public Movie(String posterPath, String backdropPath, String title, String overview, String releaseDate, double rate, int id){
         this.posterPath     = posterPath;
@@ -21,7 +22,10 @@ public class Movie implements Parcelable {
         this.releaseDate    = releaseDate;
         this.rate           = rate;
         this.id             = id;
+        isFavorite = false;
     }
+
+
     public Movie(Parcel parcel){
         this.posterPath     = parcel.readString();
         this.backdropPath   = parcel.readString();
@@ -57,6 +61,11 @@ public class Movie implements Parcelable {
     public int getId() {
         return id;
     }
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+    public void setFavorite(boolean isFavorite){ this.isFavorite = isFavorite;}
+
 
     public final static Creator<Movie> CREATOR = new Creator<Movie>(){
         @Override

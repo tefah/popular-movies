@@ -5,7 +5,9 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="4dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="4dp"
     tools:context="com.tefah.popularmovies.MainActivity"
     android:background="@color/colorPrimaryDark">
     <android.support.v7.widget.RecyclerView

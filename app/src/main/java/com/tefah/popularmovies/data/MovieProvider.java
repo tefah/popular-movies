@@ -83,13 +83,27 @@ public class MovieProvider extends ContentProvider {
                 throw new UnsupportedOperationException();
         }
         getContext().getContentResolver().notifyChange(uri, null);
-        Toast.makeText(getContext(),returnUri.toString(),Toast.LENGTH_SHORT).show();
         return returnUri;
     }
 
     @Override
-    public int delete(Uri uri, String s, String[] strings) {
-        return 0;
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        int numRows ;
+        switch (uriMatcher.match(uri)){
+            case MOVIES_CODE:
+                numRows = db.delete(MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case SPECIFIC_MOVIE_CODE:
+                selection = "id=?";
+                selectionArgs[0] = uri.getPathSegments().get(1);
+                numRows = db.delete(MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return numRows;
     }
 
     @Override
