@@ -57,13 +57,17 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
         binding.trailerRv.setLayoutManager(layoutManager);
         binding.trailerRv.setAdapter(trailerAdapter);
         binding.trailerRv.setHasFixedSize(true);
+        //to make the recycler view scroll smoothly -from stakeOverflow question-
+        binding.trailerRv.setNestedScrollingEnabled(false);
 
         LinearLayoutManager reviewsLM = new LinearLayoutManager(this);
         reviewsAdapter = new ReviewsAdapter();
         binding.reviewRv.setLayoutManager(reviewsLM);
         binding.reviewRv.setAdapter(reviewsAdapter);
         binding.reviewRv.setHasFixedSize(true);
+        binding.reviewRv.setNestedScrollingEnabled(false);
 
+        //check if the movie is already in favorites
         new AsyncTask<Integer, Void, Cursor>() {
             @Override
             protected Cursor doInBackground(Integer... ids) {
@@ -155,8 +159,6 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
 
 
     //// TODO: 3/21/2017 update any landscape layouts
-    //// TODO: 3/21/2017 befor insert check if the movie is already inserted
-    //// TODO: 3/21/2017 change the colors to some thing better may be teel
     //// TODO: 3/21/2017 add some comments
     //// TODO: 3/21/2017 delete these shit and upload we rbna yostr
     //// TODO: 3/22/2017 clean the project automatically

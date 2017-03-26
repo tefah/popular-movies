@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/colorPrimaryLight"
     android:fitsSystemWindows="true">
     <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimaryDark">
+        android:layout_height="match_parent">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -22,21 +22,40 @@
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            tools:layout_editor_absoluteY="81dp"
-            tools:layout_editor_absoluteX="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
+            app:layout_constraintTop_toTopOf="parent"
+            />
         <ImageView
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_width="0dp"
             android:layout_height="200dp"
-            app:srcCompat="@mipmap/ic_logo"
-            android:id="@+id/backdrop"
+            app:srcCompat="@android:drawable/ic_menu_gallery"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:scaleType="centerCrop" />
+            android:id="@+id/crush_backdrop"
+            android:scaleType="centerCrop"/>
+
+        <ImageView
+            android:id="@+id/backdrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            app:srcCompat="@mipmap/ic_logo"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:scaleType="centerCrop"/>
+        <ImageView
+            android:id="@+id/poster_crush"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/backdrop"
+            app:layout_constraintBottom_toBottomOf="@+id/backdrop"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp"
+            app:srcCompat="@android:drawable/ic_menu_gallery"
+            />
         <ImageView
             android:id="@+id/poster_view"
             android:layout_width="wrap_content"
@@ -47,17 +66,17 @@
             android:layout_marginLeft="32dp"
             android:layout_marginStart="32dp" />
 
-
-
-        <Button
+        <CheckBox
+            style="?android:attr/starStyle"
             android:id="@+id/favorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="32dp"
             app:layout_constraintBottom_toBottomOf="@+id/backdrop"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/backdrop" />
         <TextView
-            style="@style/text_details"
+            style="@style/primary_text"
             android:id="@+id/name"
             android:layout_width="0dp"
             app:layout_constraintLeft_toRightOf="@+id/poster_view"
@@ -68,20 +87,11 @@
             />
         <TextView
             style="@style/text_details"
-            android:id="@+id/release_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name"
-            android:text="@string/release_date"
-            />
-        <TextView
-            style="@style/text_details"
             android:id="@+id/date"
             android:layout_width="0dp"
-            app:layout_constraintLeft_toRightOf="@+id/release_date"
+            app:layout_constraintLeft_toLeftOf="@+id/name"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name"/>
+            app:layout_constraintTop_toBottomOf="@+id/name" />
         <RatingBar
             android:id="@+id/rate"
             android:layout_width="wrap_content"
@@ -89,7 +99,7 @@
             android:isIndicator="true"
             android:stepSize="0.1"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/release_date"
+            app:layout_constraintTop_toBottomOf="@+id/date"
             android:layout_marginTop="16dp"
             />
         <TextView
@@ -100,7 +110,7 @@
             app:layout_constraintBottom_toTopOf="@+id/rate"
             />
         <TextView
-            style="@style/text_details"
+            style="@style/primary_text"
             android:id="@+id/overview_tv"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rate"
@@ -110,8 +120,37 @@
             android:id="@+id/overview"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/overview_tv"
-            android:textSize="20sp"/>
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="0dp"
+            android:textSize="20sp"
+            android:layout_marginRight="8dp"
+            />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/trailer_rv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/overview"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_margin="8dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:layout_editor_absoluteX="8dp">
+
+        </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/review_rv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/trailer_rv"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_margin="8dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:layout_editor_absoluteX="8dp">
+
+        </android.support.v7.widget.RecyclerView>
 
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
+</layout>

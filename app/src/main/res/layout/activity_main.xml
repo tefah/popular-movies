@@ -9,7 +9,7 @@
     android:paddingRight="8dp"
     android:paddingTop="4dp"
     tools:context="com.tefah.popularmovies.MainActivity"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/colorPrimaryLight">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

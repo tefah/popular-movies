@@ -22,12 +22,23 @@ public class DataUtils {
     public static final int     ID_IND          = RELEASE_IND + 1;
     public static final int     IS_FAVORITE_IND = ID_IND +1;
 
+    /**
+     * query the favorites movies from database and parse it into list of movies using helper method
+     * @param context
+     * @return list of movies to be shown as favorites
+     */
     public static List<Movie> getDataFromDB(Context context){
         Cursor cursor = context.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
                 null, null, null, null);
         List<Movie> movies = fetchDataFromCursor(cursor);
         return  movies;
     }
+
+    /**
+     * fetch data from cursor to list of movies
+     * @param cursor
+     * @return list of movies
+     */
     private static List<Movie> fetchDataFromCursor(Cursor cursor){
         List<Movie> movies = new ArrayList<>();
         while (cursor.moveToNext()){

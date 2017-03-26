@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 /**
- * Created by TEFA on 3/9/2017.
+ * content provider to access the database through
  */
 
 public class MovieProvider extends ContentProvider {

@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * Created by TEFA on 3/12/2017.
+ * Contract to the the content provider
  */
 
 public class MovieContract {
@@ -15,7 +15,6 @@ public class MovieContract {
 
     public static class MovieEntry implements BaseColumns {
         public static final String TABLE_NAME = "FavouriteMovies";
-
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(MOVIES_PATH).build();
 
@@ -27,7 +26,5 @@ public class MovieContract {
         public static final String COLUMN_RATE          = "rate";
         public static final String COLUMN_ID            = "id";
         public static final String COLUMN_IS_FAVORITE   = "is_favorite";
-
-
     }
 }
